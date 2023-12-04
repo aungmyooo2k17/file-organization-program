@@ -7,7 +7,6 @@ from main import organize_files
 
 
 class TestFileOrganizer(unittest.TestCase):
-
     def setUp(self):
         # Create a temporary directory for testing
         self.test_dir = tempfile.mkdtemp()
@@ -32,13 +31,18 @@ class TestFileOrganizer(unittest.TestCase):
         ]
         for file_name in file_names:
             file_path = os.path.join(self.test_dir, file_name)
-            open(file_path, 'a').close()
+            open(file_path, "a").close()
 
         # Create some test folders in the temporary directory
         folder_names = ["Audio", "Documents", "Images", "Others"]
         for folder_name in folder_names:
             folder_path = os.path.join(self.test_dir, folder_name)
             os.makedirs(folder_path)
+
+    def test_organize_files_with_invalid_arguments(self):
+        with self.assertRaises(SystemExit) as cm:
+            organize_files(f"{self.test_dir}/invalid_file.exe")
+        self.assertEqual(cm.exception.code, 1)
 
     def test_organize_files(self):
         # Call the organize_files function with the test directory
@@ -56,13 +60,14 @@ class TestFileOrganizer(unittest.TestCase):
         others_folder = os.path.join(self.test_dir, "Others")
         self.assertTrue(os.path.exists(others_folder))
         files_in_others = os.listdir(others_folder)
-        self.assertEqual(files_in_others, ['file7.unknown'])
+        self.assertEqual(files_in_others, ["file7.unknown"])
 
         # Check if files are moved to the "Images" folder
         others_folder = os.path.join(self.test_dir, "Images")
         self.assertTrue(os.path.exists(others_folder))
         files_in_others = os.listdir(others_folder)
-        self.assertEqual(files_in_others, ['file5.jpg'])
+        self.assertEqual(files_in_others, ["file5.jpg"])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

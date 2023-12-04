@@ -28,6 +28,10 @@ folder_names = {
 
 
 def organize_files(path_to_organize):
+    if not os.path.isdir(path_to_organize):
+        print(f"Error: {path_to_organize} is not a valid directory.")
+        sys.exit(1)
+
     onlyfiles = [
         os.path.join(path_to_organize, file)
         for file in os.listdir(path_to_organize)
@@ -79,9 +83,6 @@ def new_path(old_path, extension_filetype_map, path_to_organize):
         path_to_organize, amplified_folder, os.path.basename(old_path)
     )
     return final_path
-
-
-# Extract list of files/folders
 
 
 if __name__ == "__main__":
