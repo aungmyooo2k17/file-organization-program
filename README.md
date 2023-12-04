@@ -39,4 +39,8 @@ This Python program organizes files in a specified directory based on their file
 
 ## Example
 
-Suppose you have the following directory structure:
+To organize files in the `/home/username/Downloads` directory:
+
+```bash
+python main.py /home/username/Downloads
+```
