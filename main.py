@@ -1,6 +1,9 @@
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
+
+from click import File
 
 # Get the file types
 
@@ -59,21 +62,23 @@ def organize_files(path_to_organize):
 
     [os.makedirs(folderPath, exist_ok=True) for folderPath in folder_paths]
 
-    [
-        Path(eachfile).rename(
-            new_path(eachfile, extension_filetype_map, path_to_organize)
-        )
-        for eachfile in onlyfiles
-    ]
-
+    # Move desire folders
+    for eachfile in onlyfiles:
+        if(Path(eachfile).exists()):
+            current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+            file_name, file_extension = Path(eachfile).stem, Path(eachfile).suffix
+            Path(eachfile).rename(
+                new_path(f"{file_name}_{current_datetime}{file_extension}", extension_filetype_map, path_to_organize)
+            )
+     
     # Move other folders
-    [
-        Path(onlyfolder).rename(
-            os.path.join(path_to_organize, "Others", os.path.basename(onlyfolder))
-        )
-        for onlyfolder in onlyfolders
-        if os.path.basename(onlyfolder) not in folder_names.keys()
-    ]
+    for onlyfolder in onlyfolders:
+        if os.path.basename(onlyfolder) not in folder_names.keys():
+            current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+            if(Path(onlyfolder).exists()):
+                    Path(onlyfolder).rename(
+                    os.path.join(path_to_organize, "Others", f"{os.path.basename(onlyfolder)}_{current_datetime}")
+                )
 
 
 def new_path(old_path, extension_filetype_map, path_to_organize):
