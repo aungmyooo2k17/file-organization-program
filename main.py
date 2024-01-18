@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -64,21 +65,23 @@ def organize_files(path_to_organize):
 
     # Move desire folders
     for eachfile in onlyfiles:
-        if(Path(eachfile).exists()):
+        if(not Path(eachfile).exists()):
+            Path(eachfile).rename(
+                new_path(eachfile, extension_filetype_map, path_to_organize)
+            )
+        else:
             current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
             file_name, file_extension = Path(eachfile).stem, Path(eachfile).suffix
-            Path(eachfile).rename(
-                new_path(f"{file_name}_{current_datetime}{file_extension}", extension_filetype_map, path_to_organize)
-            )
+            shutil.move(Path(eachfile), new_path(f"{file_name}_{current_datetime}{file_extension}", extension_filetype_map, path_to_organize))
      
     # Move other folders
     for onlyfolder in onlyfolders:
         if os.path.basename(onlyfolder) not in folder_names.keys():
-            current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
-            if(Path(onlyfolder).exists()):
-                    Path(onlyfolder).rename(
-                    os.path.join(path_to_organize, "Others", f"{os.path.basename(onlyfolder)}_{current_datetime}")
-                )
+            if(not Path(onlyfolder).exists()):
+                Path(onlyfolder).rename(os.path.join(path_to_organize, "Others", os.path.basename(onlyfolder)))
+            else:
+                current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+                shutil.move(Path(onlyfolder), new_path(f"{onlyfolder}_{current_datetime}", extension_filetype_map, path_to_organize))
 
 
 def new_path(old_path, extension_filetype_map, path_to_organize):
